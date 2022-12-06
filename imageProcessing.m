@@ -4,54 +4,28 @@ readpath = "speechFiles/train/";
 writepath = "Practice/";
 list = dir(readpath + "*.wav");
 
+filename = "";
 frameLength = 512;
 channel = 30;
 dp = 4;
-
 for k = 1:length(list)
     [speech_data, fs] = audioread(readpath + list(k).name);
-   
-%% Pipline for audio feature vector
-    numSamples = length(speech_data);
-    numFrames = floor(numSamples/frameLength);
     
-    fv = zeros(numFrames, channel);   
+    
 
-    for frame = 0:numFrames - 1
-        startFrame = frame * frameLength + 1;
-        endFrame = startFrame + frameLength - 1;
-    
-        % frame = x(frameStart:frameEnd);
-        shortTimeFrame = speech_data(startFrame:endFrame);
-        % hamming
-        % getMagSpec
-        [magSpec, phaseSpec] = magAndPhase(shortTimeFrame);
-        % filterbank vector
-        fbankVector = linearRectangularFilterbank(magSpec, channel);
-        
-        % log of filterbank vector
-        logfbankVector = log(fbankVector);
-        % dct of log
-        z = dct(logfbankVector);   
-    
-        % truncation
 
-    
-    
-        % push every frame of feature vector in one matrix
-        rowVector = frame + 1;
-        fv(rowVector, :) = z;
-        
-    end
-    
+
+
+
+
+
 %% wrtie parameterised file
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     filename = split(list(k).name, '.');
     mfcFilename = filename(1) + ".mfc";
     
     numVectors = numFrames;
-    vectorPeriod = framelength * 10000000 / fs; % ( 512 / 16000 ) * 10000000 = 320000 
-    % 32ms each frame (distance between 1st frame and the next expressed in 100ns)
+    vectorPeriod = framelength * 10000000 / fs; % ( 512 / 16000 ) * 10000000 = 320000 32ms each frame (distance between 1st frame and the next expressed in 100ns)
     numDims = channel;
     parmKind = 6; % 6 MFCC; 9 USER
     
@@ -72,4 +46,4 @@ for k = 1:length(list)
         end
     end
 end
-%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
