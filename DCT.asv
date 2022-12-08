@@ -19,23 +19,25 @@ Rdct = dct2(rChannel);
 Gdct = dct2(gChannel);
 Bdct = dct2(bChannel);
 
+img = Rdct; Gdct; Bdct;
+
 % just_red = cat(3,rChannel,a,a);
 
-img_new = idct2(Rdct); idct2(Gdct); idct2(Bdct);
-
+img_new = idct2(img);
 %dct of red plane
-% imshow(Rdct);
-
+imshow(Rdct);
+figure;
 %idct of full imagea
 imshow(img_new);
 figure;
-imshow(log(abs(img_new)), [], 'colormap', jet(64))
-
 %original image
-% imshow(frames);
-
-
-
+imshow(frames);
+figure;
+imshow(rgb);
+function rgb = gray2rgb(img_new)
+    cmap = jet(256); % Or whatever one you want.
+    rgb = ind2rgb(img_new, cmap); % Convert gray scale image into an RGB image.
+end
 
 
 
