@@ -1,17 +1,35 @@
 %LOOP THROUGH ALL FILES
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-readpath = "speechFiles/train/";
+readpath = "videoFiles";
 writepath = "Practice/";
 list = dir(readpath + "*.wav");
 
-filename = "";
-frameLength = 512;
-channel = 30;
-dp = 4;
+% frameLength = 512;
+
+% channel = 30;
+
 for k = 1:length(list)
-    [speech_data, fs] = audioread(readpath + list(k).name);
+    vid = VideoReader(readpath + list(k).name);
+    vidHeight = vid.Height;
+    vidWidth = vid.Width;
+    framerate = vid.FrameRate;
+
+    vidStruct = struct('cdata', zeros(vidHeight, vidWidth, 3, 'uint8'), 'colormap', []);
     
-    
+    % Loop for each frame
+    k = 1;
+    while hasFrame(vid)
+        vidStruct(k).cdata = readFrame(vid);
+        
+        img_dct = dctImage(vidStruct(k).cdata);
+        img_dct_trunc = dctTruncation(img_dct);
+        
+
+        k = k + 1;
+    end
+
+%     imtool(vidStruct(1).cdata);
+
 
 
 
