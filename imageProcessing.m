@@ -1,41 +1,57 @@
 %LOOP THROUGH ALL FILES
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-readpath = "videoFiles";
-writepath = "Practice/";
-list = dir(readpath + "*.wav");
-
-% frameLength = 512;
-
-% channel = 30;
+readpath = "LipsVideoFiles/";
+writepath = "VisualFeature/";
+list = dir(readpath + "*.mp4");
 
 for k = 1:length(list)
+
     vid = VideoReader(readpath + list(k).name);
+    disp("file read")
     vidHeight = vid.Height;
     vidWidth = vid.Width;
     framerate = vid.FrameRate;
+    numFrames = vid.NumFrames;
 
+    fv = zeros(numFrames, vidHeight* vidWidth);
+    
     vidStruct = struct('cdata', zeros(vidHeight, vidWidth, 3, 'uint8'), 'colormap', []);
     
     % Loop for each frame
-    k = 1;
+    frameCount = 1;
     while hasFrame(vid)
-        vidStruct(k).cdata = readFrame(vid);
-        
-        img_dct = dctImage(vidStruct(k).cdata);
-        img_dct_trunc = dctTruncation(img_dct);
-        
+        vidStruct(frameCount).cdata = readFrame(vid);
 
-        k = k + 1;
+%         P = roipoly(vidStruct(frameCount).cdata);
+%         ptr = find(P);
+        
+        % color mask
+        vidframe = double(vidStruct(frameCount).cdata);
+        R = vidframe(:, :, 1);
+        G = vidframe(:, :, 2);
+        B = vidframe(:, :, 3);
+    
+%         rgbMean = [mean(R(ptr)) mean(G(ptr)) mean(B(ptr))];
+        % distance between every pixel and mean colour
+%         D = sqrt((vidframe(:, :, 1) - rgbMean(1)).^2 + (vidframe(:,:,2) - rgbMean(2)).^2 + (vidframe(:,:,3) - rgbMean(3)).^2);
+        % imshow(D < std(D(:)));
+    
+        [E, thresh] = edge(rgb2gray(vidframe/255), "canny");
+        % imshow(E);
+
+        img_dct = dctImage(E, 4);
+%       img_dct_trunc = dctTruncation(img_dct);
+
+        % flatten the matrix
+        temp = img_dct';
+        dctFinal = temp(:)';
+        
+        fv(frameCount, :) = dctFinal;
+            
+        frameCount = frameCount + 1;
     end
 
 %     imtool(vidStruct(1).cdata);
-
-
-
-
-
-
-
 
 %% wrtie parameterised file
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -43,8 +59,8 @@ for k = 1:length(list)
     mfcFilename = filename(1) + ".mfc";
     
     numVectors = numFrames;
-    vectorPeriod = framelength * 10000000 / fs; % ( 512 / 16000 ) * 10000000 = 320000 32ms each frame (distance between 1st frame and the next expressed in 100ns)
-    numDims = channel;
+    vectorPeriod = 1 * 10000000 / framerate; % ( 512 / 16000 ) * 10000000 = 320000 32ms each frame (distance between 1st frame and the next expressed in 100ns)
+    numDims = vidHeight*vidWidth;
     parmKind = 6; % 6 MFCC; 9 USER
     
     % Open file for write: 
@@ -59,8 +75,8 @@ for k = 1:length(list)
     
     % Write the data: one coefficient at a time: 
     for x = 1: numFrames 
-        for y = 1: channel
-            fwrite(fid, fv(x, y), 'float32');
+        for y = 1: vidHeight*vidWidth
+                fwrite(fid, fv(x, y), 'float32');
         end
     end
 end
