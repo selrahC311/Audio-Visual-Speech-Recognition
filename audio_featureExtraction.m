@@ -1,15 +1,16 @@
 %LOOP THROUGH ALL FILES
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-readpath = "Audio from recordings" + "/";
-writepath = "Practice/";
-list = dir(readpath + "*.mp3");
+readpath = "LipsVideoFiles/";
+writepath = "AudioFeatures/";
+list = dir(readpath + "*.mp4");
 
 frameLength = 512;
 channel = 30;
 
 for k = 1:length(list)
     [speech_data, fs] = audioread(readpath + list(k).name);
+    speech_data = speech_data(:, 1);
    
 %% Pipline for audio feature vector
     numSamples = length(speech_data);
@@ -50,7 +51,7 @@ for k = 1:length(list)
     mfcFilename = filename(1) + ".mfc";
     
     numVectors = numFrames;
-    vectorPeriod = framelength * 10000000 / fs; % ( 512 / 16000 ) * 10000000 = 320000 
+    vectorPeriod = frameLength * 10000000 / fs; % ( 512 / 16000 ) * 10000000 = 320000 
     % 32ms each frame (distance between 1st frame and the next expressed in 100ns)
     numDims = channel;
     parmKind = 6; % 6 MFCC; 9 USER
