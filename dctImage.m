@@ -10,8 +10,8 @@ function [img_dct] = dctImage(img, trunclevel)
 
     % compute te 2d-dct of 8x8 blocks in image
 %     T = dctmtx(8);
-    fun = @(block_struct) dct2(block_struct.data);
-    B = blockproc(I, [8 8], fun);
+    x = @(block_struct) dct2(block_struct.data);
+    B = blockproc(I, [8 8], x);
 
     % truncation
     mask = zeros(8, 8);
