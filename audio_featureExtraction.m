@@ -1,12 +1,8 @@
 %LOOP THROUGH ALL FILES
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-<<<<<<< HEAD
+
 readpath = "Audio from recordings" + "/";
 writepath = "Practice/";
-=======
-readpath = "Audio from recordings" + '/';
-writepath = "AudioFeatures/";
->>>>>>> 14b77ff2a2bc8833ba9a5a5036f2c2ae40d29fab
 list = dir(readpath + "*.mp3");
 
 frameLength = 512;
