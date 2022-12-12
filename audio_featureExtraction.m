@@ -1,12 +1,11 @@
 %LOOP THROUGH ALL FILES
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-readpath = "speechFiles/train/";
-writepath = "Practice/";
-list = dir(readpath + "*.wav");
+readpath = "Audio from recordings" + '/';
+writepath = "AudioFeatures/";
+list = dir(readpath + "*.mp3");
 
 frameLength = 512;
 channel = 30;
-dp = 4;
 
 for k = 1:length(list)
     [speech_data, fs] = audioread(readpath + list(k).name);
@@ -32,11 +31,11 @@ for k = 1:length(list)
         % log of filterbank vector
         logfbankVector = log(fbankVector);
         % dct of log
-        z = dct(logfbankVector);   
+        j = dct(logfbankVector);   
     
-        % truncation
-
-    
+        % truncation 50%
+        j(length(j)*0.5:length(j)) = 0;
+        z = j;
     
         % push every frame of feature vector in one matrix
         rowVector = frame + 1;
