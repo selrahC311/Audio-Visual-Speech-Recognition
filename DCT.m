@@ -22,7 +22,7 @@ img_new1 = idct2(img_new);
 
 % just_red = cat(3,rChannel,a,a);
 
-% img_new = idct2(Rdct); idct2(Gdct); idct2(Bdct);
+img_new = idct2(Rdct); idct2(Gdct); idct2(Bdct);
 
 %dct of red plane
 % imshow(Rdct);
