@@ -1,8 +1,8 @@
 %LOOP THROUGH ALL FILES
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-readpath = "LipsVideoFiles/";
-writepath = "VisualFeatures/";
+readpath = "LipsVideoFiles/test/";
+writepath = "VisualFeatures/dctBlock/test/";
 list = dir(readpath + "*.mp4");
 
 frameLength = 512;
@@ -52,9 +52,9 @@ for k = 1:length(list)
     vidWidth = vid.Width;
     framerate = vid.FrameRate;
     visual_numFrames = vid.NumFrames;
-    visual_trunclevel = 0.5*0.5;
+    visual_trunclevel = 0.5*0.5*0.5*0.5;
 
-    visual_fv = zeros(visual_numFrames, (16) *(28));
+    visual_fv = zeros(visual_numFrames, 375);
     
     vidStruct = struct('cdata', zeros(vidHeight, vidWidth, 3, 'uint8'), 'colormap', []);
     
@@ -80,10 +80,10 @@ for k = 1:length(list)
         [E, thresh] = edge(rgb2gray(vidframe/255), "canny");
         % imshow(E);
 
-        img_dct = dctImage(E, 4);
-        img_dct = dctImage(img_dct, 4);
-        img_dct = dctImage(img_dct, 4);
-        img_dct = dctImage(img_dct, 4);
+        img_dct = dctBlockImage(E, 5);
+        img_dct = dctBlockImage(img_dct, 5);
+        img_dct = dctBlockImage(img_dct, 5);
+        img_dct = dctBlockImage(img_dct, 5);
 %       img_dct_trunc = dctTruncation(img_dct);
 
         % flatten the matrix

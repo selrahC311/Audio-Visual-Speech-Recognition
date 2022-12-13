@@ -2,7 +2,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 readpath = "LipsVideoFiles/test/";
-writepath = "VisualFeatures/test/";
+writepath = "VisualFeatures/dctWhole/test/";
 list = dir(readpath + "*.mp4");
 
 frameLength = 512;
