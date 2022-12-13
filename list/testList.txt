@@ -1,1 +1,4 @@
 MFCCs/test/vid21c.mfc
+MFCCs/test/vid32c.mfc
+MFCCs/test/vid33c.mfc
+MFCCs/test/vid34c.mfc

@@ -1,13 +1,3 @@
-MFCCs\train\vid1c.mfc
-MFCCs\train\vid2c.mfc
-MFCCs\train\vid3c.mfc
-MFCCs\train\vid4c.mfc
-MFCCs\train\vid5c.mfc
-MFCCs\train\vid6c.mfc
-MFCCs\train\vid7c.mfc
-MFCCs\train\vid8c.mfc
-MFCCs\train\vid9c.mfc
-MFCCs\train\vid10c.mfc
 MFCCs\train\vid11c.mfc
 MFCCs\train\vid12c.mfc
 MFCCs\train\vid13c.mfc
@@ -18,3 +8,13 @@ MFCCs\train\vid17c.mfc
 MFCCs\train\vid18c.mfc
 MFCCs\train\vid19c.mfc
 MFCCs\train\vid20c.mfc
+MFCCs\train\vid22c.mfc
+MFCCs\train\vid23c.mfc
+MFCCs\train\vid24c.mfc
+MFCCs\train\vid25c.mfc
+MFCCs\train\vid26c.mfc
+MFCCs\train\vid27c.mfc
+MFCCs\train\vid28c.mfc
+MFCCs\train\vid29c.mfc
+MFCCs\train\vid30c.mfc
+MFCCs\train\vid31c.mfc
