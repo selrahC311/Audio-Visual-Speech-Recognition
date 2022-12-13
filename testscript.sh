@@ -22,4 +22,5 @@ HInit -S lists/trainList.txt -l Teodora -L labels/train -M hmms -o Teodora -T 1 
 HInit -S lists/trainList.txt -l sil -L labels/train -M hmms -o sil -T 1 lib/proto8States.txt
 
 HVite -T 1 -S lists/testList.txt -d hmms/ -w lib/NET -l results lib/dict lib/words3
-HResults -e "???" sil -e "???" sp -L labels/test lib/words3 results/*.rec >> 8statesResult.txt
+HResults -e "???" sil -e "???" sp -L labels/test lib/words3 results/*.rec
+

@@ -2,7 +2,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 readpath = "LipsVideoFiles/test/";
-writepath = "VisualAudioFeatures/test/";
+writepath = "VisualFeatures/test/";
 list = dir(readpath + "*.mp4");
 
 frameLength = 512;
@@ -17,8 +17,7 @@ for k = 1:length(list)
     audio_numSamples = length(speech_data);
     audio_numFrames = floor(audio_numSamples/frameLength);
     
-    % if truncation: channel * trunclevel
-    audio_fv = zeros(audio_numFrames-2, channel);   
+    audio_fv = zeros(audio_numFrames, channel*trunclevel_audio);   
 
     for frame = 0:audio_numFrames - 1
         startFrame = frame * frameLength + 1;
@@ -35,21 +34,14 @@ for k = 1:length(list)
         % log of filterbank vector
         logfbankVector = log(fbankVector);
         % dct of log
-        z = dct(logfbankVector);   
+        j = dct(logfbankVector);   
     
         % truncation 50%
-%         z = j(1:length(j)*trunclevel_audio);
+        z = j(1:length(j)*trunclevel_audio);
     
         % push every frame of feature vector in one matrix
-        if frame == 0 
-            
-        elseif frame == 1
-            
-        else
-            rowVector = frame + 1;
-            audio_fv(rowVector,:) = z;
-%             disp(audio_fv(rowVector,:));
-        end
+        rowVector = frame + 1;
+        audio_fv(rowVector, :) = z;
     end
  
 
@@ -62,7 +54,7 @@ for k = 1:length(list)
     visual_numFrames = vid.NumFrames;
     visual_trunclevel = 0.5*0.5;
 
-    visual_fv = zeros(visual_numFrames, (16) *(28));
+    visual_fv = zeros(visual_numFrames, 25*25);
     
     vidStruct = struct('cdata', zeros(vidHeight, vidWidth, 3, 'uint8'), 'colormap', []);
     
@@ -88,36 +80,27 @@ for k = 1:length(list)
         [E, thresh] = edge(rgb2gray(vidframe/255), "canny");
         % imshow(E);
 
-        img_dct = dctImage(E, 4);
-        img_dct = dctImage(img_dct, 4);
-        img_dct = dctImage(img_dct, 4);
-        img_dct = dctImage(img_dct, 4);
-%       img_dct_trunc = dctTruncation(img_dct);
+        img_dct = dctWholeImage(E);
 
         % flatten the matrix
         temp = img_dct';
         dctFinal = temp(:)';
         
         visual_fv(frameCount, :) = dctFinal;
-        
-            
         frameCount = frameCount + 1;
     end
 
 %     imtool(vidStruct(1).cdata);
-%% Combination of visual feature and audio feature
-
+    %% Spline interpolation for video
     visual_fv_interp = dg_visual_feature_interp(visual_fv, audio_fv);
-%     visual_fv_resample = resample(visual_fv, length(audio_fv), length(visual_fv));
-    combined_fv = horzcat(audio_fv, visual_fv_interp);
-    
+
 %% wrtie parameterised file
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     disp("writing mfc count: " + k);
     filename = split(list(k).name, '.');
     mfcFilename = filename(1) + ".mfc";
     
-    [rows,columns] = size(combined_fv);
+    [rows,columns] = size(visual_fv_interp);
     numVectors = rows;
     vectorPeriod = frameLength * 10000000 / fs; % ( 512 / 16000 ) * 10000000 = 320000 32ms each frame (distance between 1st frame and the next expressed in 100ns)
     numDims = columns;
@@ -136,7 +119,7 @@ for k = 1:length(list)
     % Write the data: one coefficient at a time: 
     for x = 1: rows 
         for y = 1: columns
-                fwrite(fid, combined_fv(x, y), 'float32');
+                fwrite(fid, visual_fv_interp(x, y), 'float32');
         end
     end
 end

@@ -11,12 +11,12 @@ channel = 30;
 for k = 1:length(list)
     [speech_data, fs] = audioread(readpath + list(k).name);
     speech_data = speech_data(:, 1);
-   
+    soundsc(speech_data, fs);
 %% Pipline for audio feature vector
     numSamples = length(speech_data);
     numFrames = floor(numSamples/frameLength);
     
-    fv = zeros(numFrames, channel);   
+    fv = zeros(numFrames-2, channel);   
 
     for frame = 0:numFrames - 1
         startFrame = frame * frameLength + 1;
@@ -33,16 +33,23 @@ for k = 1:length(list)
         % log of filterbank vector
         logfbankVector = log(fbankVector);
         % dct of log
-        j = dct(logfbankVector);   
+        z = dct(logfbankVector);   
+        disp(z);
     
         % truncation 50%
-        j(length(j)*0.5:length(j)) = 0;
-        z = j;
+        z(length(z)*0.5:length(z)) = 0;
+        
     
         % push every frame of feature vector in one matrix
-        rowVector = frame + 1;
-        fv(rowVector, :) = z;
-        
+        if frame == 0 
+            
+        elseif frame == 1
+            
+        else
+            rowVector = frame + 1;
+            fv(rowVector,:) = z;
+            disp(fv(rowVector,:));
+        end
     end
     
 %% wrtie parameterised file
@@ -50,10 +57,11 @@ for k = 1:length(list)
     filename = split(list(k).name, '.');
     mfcFilename = filename(1) + ".mfc";
     
-    numVectors = numFrames;
+    [row, column] = size(fv);
+    numVectors = row;
     vectorPeriod = frameLength * 10000000 / fs; % ( 512 / 16000 ) * 10000000 = 320000 
     % 32ms each frame (distance between 1st frame and the next expressed in 100ns)
-    numDims = channel;
+    numDims = column;
     parmKind = 6; % 6 MFCC; 9 USER
     
     % Open file for write: 
@@ -67,10 +75,10 @@ for k = 1:length(list)
     fwrite(fid, parmKind, 'int16'); % code for the sample kind (2 byte int)
     
     % Write the data: one coefficient at a time: 
-    for x = 1: numFrames 
-        for y = 1: channel
+    for x = 1: row 
+        for y = 1: column
             fwrite(fid, fv(x, y), 'float32');
         end
     end
 end
-%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
