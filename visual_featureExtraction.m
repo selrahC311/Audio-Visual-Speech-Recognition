@@ -2,7 +2,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 readpath = "LipsVideoFiles/";
-writepath = "VisualFeatures/";
+writepath = "VisualFeature/";
 list = dir(readpath + "*.mp4");
 
 frameLength = 512;
@@ -54,7 +54,7 @@ for k = 1:length(list)
     visual_numFrames = vid.NumFrames;
     visual_trunclevel = 0.5*0.5;
 
-    visual_fv = zeros(visual_numFrames, (52) *(vidWidth/4));
+    visual_fv = zeros(visual_numFrames, (16) *(28));
     
     vidStruct = struct('cdata', zeros(vidHeight, vidWidth, 3, 'uint8'), 'colormap', []);
     
@@ -81,6 +81,8 @@ for k = 1:length(list)
         % imshow(E);
 
         img_dct = dctImage(E, 4);
+        img_dct = dctImage(img_dct, 4);
+        img_dct = dctImage(img_dct, 4);
         img_dct = dctImage(img_dct, 4);
 %       img_dct_trunc = dctTruncation(img_dct);
 
@@ -122,7 +124,7 @@ for k = 1:length(list)
     
     % Write the data: one coefficient at a time: 
     for x = 1: rows 
-        for y = 1: colums
+        for y = 1: columns
                 fwrite(fid, visual_fv_interp(x, y), 'float32');
         end
     end
