@@ -2,7 +2,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 readpath = "LipsVideoFiles/";
-writepath = "VisualFeatures/";
+writepath = "Visual&AudioFeatures/";
 list = dir(readpath + "*.mp4");
 
 frameLength = 512;
@@ -97,16 +97,19 @@ for k = 1:length(list)
     end
 
 %     imtool(vidStruct(1).cdata);
-    %% Spline interpolation for video
-    visual_fv_interp = dg_visual_feature_interp(visual_fv, audio_fv);
+%% Combination of visual feature and audio feature
 
+    visual_fv_interp = dg_visual_feature_interp(visual_fv, audio_fv);
+%     visual_fv_resample = resample(visual_fv, length(audio_fv), length(visual_fv));
+    combined_fv = horzcat(audio_fv, visual_fv_interp);
+    
 %% wrtie parameterised file
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     disp("writing mfc count: " + k);
     filename = split(list(k).name, '.');
     mfcFilename = filename(1) + ".mfc";
     
-    [rows,columns] = size(visual_fv_interp);
+    [rows,columns] = size(combined_fv);
     numVectors = rows;
     vectorPeriod = frameLength * 10000000 / fs; % ( 512 / 16000 ) * 10000000 = 320000 32ms each frame (distance between 1st frame and the next expressed in 100ns)
     numDims = columns;
@@ -125,7 +128,7 @@ for k = 1:length(list)
     % Write the data: one coefficient at a time: 
     for x = 1: rows 
         for y = 1: columns
-                fwrite(fid, visual_fv_interp(x, y), 'float32');
+                fwrite(fid, combined_fv(x, y), 'float32');
         end
     end
 end
