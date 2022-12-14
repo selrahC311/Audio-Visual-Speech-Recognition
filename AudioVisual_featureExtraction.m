@@ -18,7 +18,7 @@ for k = 1:length(list)
     audio_numFrames = floor(audio_numSamples/frameLength);
     
     % if truncation: channel * trunclevel
-    audio_fv = zeros(audio_numFrames-2, channel);   
+    audio_fv = zeros(audio_numFrames-2, channel*0.5);   
 
     for frame = 0:audio_numFrames - 1
         startFrame = frame * frameLength + 1;
@@ -38,7 +38,7 @@ for k = 1:length(list)
         z = dct(logfbankVector);   
     
         % truncation 50%
-%         z = j(1:length(j)*trunclevel_audio);
+        z = z(1:length(z)*trunclevel_audio);
     
         % push every frame of feature vector in one matrix
         if frame == 0 
@@ -62,7 +62,7 @@ for k = 1:length(list)
     visual_numFrames = vid.NumFrames;
     visual_trunclevel = 0.5*0.5;
 
-    visual_fv = zeros(visual_numFrames, (16) *(28));
+    visual_fv = zeros(visual_numFrames, 375);
     
     vidStruct = struct('cdata', zeros(vidHeight, vidWidth, 3, 'uint8'), 'colormap', []);
     
@@ -88,10 +88,10 @@ for k = 1:length(list)
         [E, thresh] = edge(rgb2gray(vidframe/255), "canny");
         % imshow(E);
 
-        img_dct = dctImage(E, 4);
-        img_dct = dctImage(img_dct, 4);
-        img_dct = dctImage(img_dct, 4);
-        img_dct = dctImage(img_dct, 4);
+        img_dct = dctBlockImage(E, 5);
+        img_dct = dctBlockImage(img_dct, 5);
+        img_dct = dctBlockImage(img_dct, 5);
+        img_dct = dctBlockImage(img_dct, 5);
 %       img_dct_trunc = dctTruncation(img_dct);
 
         % flatten the matrix

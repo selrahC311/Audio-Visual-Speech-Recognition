@@ -1,8 +1,8 @@
 %LOOP THROUGH ALL FILES
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-readpath = "LipsVideoFiles/";
-writepath = "AudioFeatures/";
+readpath = "LipsVideoFiles/test/";
+writepath = "AudioFeatures/test/";
 list = dir(readpath + "*.mp4");
 
 frameLength = 512;
@@ -11,7 +11,7 @@ channel = 30;
 for k = 1:length(list)
     [speech_data, fs] = audioread(readpath + list(k).name);
     speech_data = speech_data(:, 1);
-    soundsc(speech_data, fs);
+%     soundsc(speech_data, fs);
 %% Pipline for audio feature vector
     numSamples = length(speech_data);
     numFrames = floor(numSamples/frameLength);
